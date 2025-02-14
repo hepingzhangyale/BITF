@@ -39,7 +39,7 @@ Required codes are located under ./numerical_demonstrations/*., which generates 
 
 
 
-## Instructions to Perform Simulations
+## Instructions to Perform Simulations (Tables 1-3, Figure 3,5,6)
 --------
 ### Step 1
  `./simulation/1-reproduction_tables1-3.R` reproduces the simulation results in the paper (Tables 1-3, Figures 3, 5, or respectively Models 2.1a to 3.3). The model number need to be provided as an input of the wrapper function `reproduction`. For Models 3.1 and 3.2, an outlier ratio number (in percentage) is also needed as a second input parameter. 
