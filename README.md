@@ -54,4 +54,4 @@ Compute the ball impurity reduction of all the SNPs in the snpMatrix as demonstr
 Run "summarize_final.R" to summarize and generate the manhattan plots. 
 
 ### Step 4 (Tree construction)
-For smaller data sets, `biRegressionTree.R` in the `\code` folder can be directly utilized to obtain the ball tree. For larger data sets, e.g. the ball tree in Section 5.4 of the paper, we recommend iteratively perform Step 2 and 3 to mannually obtain the tree. 
+For smaller data sets, `biRegressionTree.R` in the `\code` folder can be directly utilized to obtain the ball tree. For larger data sets, e.g. the ball tree in Section 5.4 of the paper, we recommend iteratively performing Step 2 and 3 to mannually obtain the tree. 
