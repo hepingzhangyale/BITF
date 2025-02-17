@@ -34,7 +34,7 @@ Given data privacy and capacity constraints, we did not put the original genotyp
 ----
 Given data privacy and capacity constraints, we did not put the original genotype data from UKB online. A general, demonstrative set of codes is provided in the `\Real_data_application` folder, contains the codes required to perform the real data application in Chapter 5. 
 
-Required input files:
+Before performing the data application, the following input files are required:
 * A cvs file containing all the baseline characteristics, (in our case, named as ukb50595.csv),
 * The plink data files (.bed, .bim, and .fam) of the genomic data.
 * The phenotype, or complicated data objects files. For the resting state fMRI partial correlaiton matrices, a `txt` file is provided for each subject. But in general, it can be tailored to any data objects, provided as a list in R. 
