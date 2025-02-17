@@ -27,9 +27,10 @@ row.names(PG.mat)<-row.names(map)
 ###########compute the BI reduction on the discovery set
 load("../pheno.RData")
 load("../full_dist_mat.RData")
-for(k in 1:n.snp){
+fo(k in 1:n.snp){
 PG.mat[k,1]<-SNP_IR_subsample(pheno,geno[,k],10,10,full_dist_mat)
 }
 rm(list=c("geno","full_dist_mat","pheno"))
 
 save.image(file=paste0("GWBI_results.RData"))
+
