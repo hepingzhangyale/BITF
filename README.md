@@ -20,12 +20,6 @@ Note： with the library `Rcpp` the above cpp codes can be directly compiled in 
 * `SNP_IR_full.R` and `SNP_IR_subsample.R` : computation of the ball impurity reduction of a single SNP using the full sample, or subsampling strategy.
 
 
-## Instructions to Reproduce the Numerical Demonstrations (Figures 1-2, 4)
---------------
-Required codes are located under ./numerical_demonstrations/*., which generates all subfigures of Figures 1-2 and 4 of the manuscript.
-
-
-
 ## Instructions to Reproduce the Numerical Demonstrations and Simulations (Tables 1-3, Figure 3,5,6)
 --------
 ### Simulations based on randomly generated data
