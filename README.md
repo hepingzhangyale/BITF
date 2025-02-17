@@ -23,7 +23,7 @@ Note： with the library `Rcpp` the above cpp codes can be directly compiled in 
 ## Instructions to Reproduce the Numerical Demonstrations and Simulations (Tables 1-3, Figure 3,5,6)
 --------
 ### Simulations based on randomly generated data
- `./simulation/1-reproduction_tables1-3.R` reproduces the simulation results in the paper (Tables 1-3, Figures 1-5). 
+ `./simulation/1-reproduction_simulation.R` reproduces the simulation results in the paper (Tables 1-3, Figures 1-5). 
 
 ### Simulation based on real genotype data from UKB
 `./simulation/2-real_geno_data_based_simu.R` is a demo of the simulation based on real UKB data in the paper (Figure 6). 
