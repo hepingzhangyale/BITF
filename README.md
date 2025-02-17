@@ -48,7 +48,7 @@ plink --bfile your_input_file --indep-pairwise 500 50 0.2 --out pruned_data
 * Run "Initialization.R" to transform the genotype data into the format of a snpMatrix, and compute the distance matrix of the phenotye data. The genotype and phenotype data will be saved as `geno_transed.RData` and `pheno.RData` respectively. The full distance matrice of the phenotype data objects will be saved as `full_dist_mat.RData`.
 
 ### Step 2. 
-Compute the ball impurity reduction of all the SNPs in the snpMatrix as demonstrated in "Genome-wide-BI.R". The default method is to use the subsampling strategy. 
+Compute the ball impurity reduction of all the SNPs in the snpMatrix as demonstrated in "Genome-wide-BI.R". The default method is to use the subsampling strategy. The results will be saved as `GWBI_results.RData`.
 
 ### Step 3. 
 Run "summarize_final.R" to summarize and generate the manhattan plots. 
