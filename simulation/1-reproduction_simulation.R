@@ -18,9 +18,9 @@ library(shapes)
 library(Rcpp)
 library(Ball)    # for Ball Correlation
 library(energy)  # for Distance Correlation
-
-sourceCpp("BallDistanceVector.cpp")
-sourceCpp("BallImpurity.cpp")
+parent.path<- "/Users/mengluche/Documents/Research/Ball_impurity/Code_availability/ballimpurity/BITF/"
+sourceCpp(paste0(parent.path,"BallDistanceVector.cpp"))
+sourceCpp(paste0(parent.path,"BallImpurity.cpp"))
 repeat.time=100
 #Gaussion
 n=500
@@ -195,8 +195,9 @@ dev.off()
 ##########################
 rm(list=ls())
 library(Rcpp)
-sourceCpp("BallDistanceVector.cpp")
-sourceCpp("BallImpurity.cpp")
+parent.path<- "/Users/mengluche/Documents/Research/Ball_impurity/Code_availability/ballimpurity/BITF/"
+sourceCpp(paste0(parent.path,"BallDistanceVector.cpp"))
+sourceCpp(paste0(parent.path,"BallImpurity.cpp"))
 pvec=c(0.1, 0.74, 1.47)
 
 n=500
@@ -251,9 +252,8 @@ for(j in 1:3){
 #########################
 ####### Table 1 #########
 #########################
-
 rm(list=ls())
-parent.path<- ### specify your parent path
+parent.path<- "/Users/mengluche/Documents/Research/Ball_impurity/Code_availability/ballimpurity/BITF/"### specify your parent path
 source(paste0(parent.path,"simulation/simu_rank_matrix.R"))
 library(Rcpp)
 library(energy) #for Distance Correlation
@@ -373,10 +373,13 @@ for (r in 1:repeat_times)
 ##################################
 ########## Table 1 / 2.1b ########
 ##################################
+rm(list=ls())
 library(Rcpp)
 library(energy) #for Distance Correlation
 library(Ball)
 library(VGAM)
+    ### specify your parent path
+    parent.path<- "/Users/mengluche/Documents/Research/Ball_impurity/Code_availability/ballimpurity/BITF/"
     sourceCpp(paste0(parent.path,"code/BallDistanceVector.cpp"))
     sourceCpp(paste0(parent.path,"code/BallImpurity.cpp"))
     # calculate the frequency of the true signals being selected 
@@ -495,11 +498,13 @@ library(VGAM)
 ###########################################
 ######### Table 1 / Model 2.2 #############
 ###########################################
-    if(Model=="2.2"){
+    rm(list=ls())
     library(Rcpp)
     library(energy) #for Distance Correlation
     library(Ball)
     library(VGAM)
+    ### specify your parent path
+    parent.path<- "/Users/mengluche/Documents/Research/Ball_impurity/Code_availability/ballimpurity/BITF/"
     sourceCpp(paste0(parent.path,"code/BallDistanceVector.cpp"))
     sourceCpp(paste0(parent.path,"code/BallImpurity.cpp"))
     # calculate the frequency of the true signals being selected 
@@ -619,10 +624,14 @@ library(VGAM)
               list("Indicator P_m of Dcor"=c(Sel.rate(n,select_number,true_set_rec,Dcor_result),"Indicator P_a of Dcor"=Sel.rate.all(n,select_number,true_set_rec,Dcor_result))))
     result
     save.image(file="Model2.2.Rdata")
-  }else 
-    if(Model=="2.3"){
+  
+###### Model 2.3 ##########
+    rm(list=ls())
     library(Ball)
     library(Rcpp)
+    
+    ##change the parent path accordingly
+    parent.path<- "/Users/mengluche/Documents/Research/Ball_impurity/Code_availability/ballimpurity/BITF/"
     sourceCpp(paste0(parent.path,"code/BallImpurity.cpp"))
     sourceCpp(paste0(parent.path,"code/BallDistanceVector.cpp"))
     source(paste0(parent.path,"code/biRegressionTree.R"))
@@ -662,10 +671,13 @@ library(VGAM)
     ratesallbt=sum(apply((rank_mat[,(1:n_sig)]>0)&(rank_mat[,(1:n_sig)]<=10),1,sum)>=3)
     results=rbind(results,c(ratesi,ratesallbt))
     save.image("Model2.3.RData")
-  }else 
-    if(Model=="2.4"){
+   
+###### Model 2.4 #########
+    rm(list=ls())
     library(Ball)
     library(Rcpp)
+    ##change the parent path accordingly
+    parent.path<- "/Users/mengluche/Documents/Research/Ball_impurity/Code_availability/ballimpurity/BITF/"
     sourceCpp(paste0(parent.path,"code/BallImpurity.cpp"))
     sourceCpp(paste0(parent.path,"code/BallDistanceVector.cpp"))
     source(paste0(parent.path,"code/biRegressionTree.R"))
@@ -692,13 +704,100 @@ library(VGAM)
     }
     biTree<-PruneTreeComplete(biTree,1.5,4)
     save.image("model2.4.RData")
-  }else 
-    if(Model=="3.1"){
+  
+    
+    
+######## Figure 4 ########
+    library(movMF)
+    library(circular)
+    library(rgl)
+    
+    kappa_vector=c(50,20,10,5,2)
+    j=1 ### plot the case for kappa=50. Change the index to get plots for other kappa values
+    n_sig=2
+    n=200
+    p_X=100
+    p_Y=3
+    signal_level1=0.5;noise_level1=0.05
+    set.seed(123)
+    X=matrix(rbinom(n*p_X,size=1,prob=0.5),nrow=n)
+    #### the original predictors are binary with p=0.5
+    sig = sample(1:p_X,size=n_sig,replace=F)
+    #### randomly select n_sig of them to be active predictors
+    #print(sig)
+    Z=X[,sig]+matrix(rnorm(n*n_sig,mean=0,sd=noise_level1),nrow=n)
+    ### transform X into Z by magnifying by signal_level1 and adding perturbation 
+    ## with sd=noise_level1
+    transformed_cov=Z%*%matrix(c(2/3,1/3,-1/3,-1/3),nrow=2,byrow = T)
+    ### transform Z into a more compact, 2-dim covariate vector transformed_cov
+    ### 
+    q_Z=ncol(transformed_cov)
+    B_True=matrix(c(0,1,1,0,-1,1),nrow=2,byrow=T)  
+    #B_True=c(0,rep(0,p_Y-q_Z-1),rep(1,q_Z))
+    mu0=c(1,0,0)#signal_level
+    mu0_vec<-as.vector(mu0)
+    ##Pheno
+    library(movMF)
+    Y=matrix(NA,nrow=dim(transformed_cov)[1],ncol=length(B_True))
+    for(i in 1:dim(transformed_cov)[1]){
+      mu=c(0,transformed_cov[i,,drop = FALSE]) #%*% B_True
+      mu=mu+mu0_vec#mu=colSums(t(transformed_cov[i,,drop = FALSE]) %*% t(as.matrix(B_True_vec)))+mu0_vec
+      mu1=mu*kappa_vector[j]
+      mu_final=mu/norm(mu,type="2")*kappa_vector[j]
+      
+      Y[i,]=rmovMF(1,mu_final)
+    }
+    X_vec=rbind(c(0,0),c(0,1),c(1,0),c(1,1))
+    open3d()
+    spheres3d(0,0,0,radius=1.0,lit=TRUE,color="lavender",front="lines")
+    observer3d(0,0,7)
+    for(k in 1:4){
+      x=Y[which(X[,sig[1]]==X_vec[k,1]&X[,sig[2]]==X_vec[k,2]),]
+      print(colMeans(x))
+      points3d(x[,1],x[,2],x[,3],col=rainbow(4)[k],mode="point",size=6.5)
+      #plot(circular(x[,1]),cex=0.8,bin=50,stack=TRUE,shrink=1.3,main=paste0("kappa=",kappa[i]))
+    }
+    par3d(windowRect = c(0, 0, 400, 400))
+    
+    mat <- par3d("userMatrix")
+    # Rotate around the 3 axis to better show the points
+    mat <- rotate3d(mat, angle = pi/2, x = 1, y = 0, z = 0)
+    par3d(userMatrix = mat)
+    mat <- rotate3d(mat, angle = pi/2, x = 0, y = -1, z = 0)
+    par3d(userMatrix = mat)
+    mat <- rotate3d(mat, angle = pi/16, x = 0, y = 0, z = 1)
+    par3d(userMatrix = mat)
+    
+    legend3d("topright", legend = paste('Signal=', c('(0,0)', '(0,1)','(1,0)','(1,1)')), pch = 16, col = rainbow(4), cex=1.4, inset=c(0.01))
+    highlevel()
+    rgl.snapshot(filename="kappa50_4groups.png",fmt='png')
+######## Model 3.1 #######
+    rm(list=ls())
     library(snow)
     library(snowfall)
     library(tictoc)
     library(movMF)
     library(MASS)
+    ##change the parent path accordingly
+    parent.path<- "/Users/mengluche/Documents/Research/Ball_impurity/Code_availability/ballimpurity/BITF/"
+    source(paste0(parent.path,"simulation/simu_rank_matrix.R"))
+    
+    rep=100
+    n=200          #### sample size
+    p_X <- 500    #### number of columns in X
+    n_sig=3
+    p_Y<-5
+    
+    startingseed=202411
+    znoise_level=0.2
+    ynoise_level=0.3
+    B_True=matrix(c(0,1,1,1,0,0,2,2,0,0,0,3,0,0,0),nrow=3,byrow=T)
+    mu0=c(1,0,0,0,0)#
+    outlier_ratio=0.1 #to be varied
+    rank_mat=list(nh_BI4=matrix(rep(0,rep*n_sig),nrow=rep),nh_BCor=matrix(rep(0,rep*n_sig),nrow=rep),nh_DCor=matrix(rep(0,rep*n_sig),nrow=rep),
+                  max_BI4=matrix(rep(0,rep*n_sig),nrow=rep),max_BCor=matrix(rep(0,rep*n_sig),nrow=rep),max_DCor=matrix(rep(0,rep*n_sig),nrow=rep))
+    
+  
     sim_BI4=function(r){
       seed=startingseed+r
       set.seed(seed)
@@ -863,20 +962,6 @@ library(VGAM)
       res_r=simu_rank_matrix_euclid(Y,X,sig,method="DCor",dist_method = "maximum")$rank
       return(res_r)
     }
-    rep=100
-    n=200          #### sample size
-    p_X <- 500    #### number of columns in X
-    n_sig=3
-    p_Y<-5
-    
-    startingseed=202411
-    znoise_level=0.2
-    ynoise_level=0.3
-    B_True=matrix(c(0,1,1,1,0,0,2,2,0,0,0,3,0,0,0),nrow=3,byrow=T)
-    mu0=c(1,0,0,0,0)#
-    outlier_ratio=0.01 #to be varied
-    rank_mat=list(nh_BI4=matrix(rep(0,rep*n_sig),nrow=rep),nh_BCor=matrix(rep(0,rep*n_sig),nrow=rep),nh_DCor=matrix(rep(0,rep*n_sig),nrow=rep),
-                  max_BI4=matrix(rep(0,rep*n_sig),nrow=rep),max_BCor=matrix(rep(0,rep*n_sig),nrow=rep),max_DCor=matrix(rep(0,rep*n_sig),nrow=rep))
     
     tic()
     sfInit(cpus=3,parallel=TRUE) 
@@ -962,9 +1047,35 @@ library(VGAM)
     rowSums(rank_mat$max_DCor<thres)
     sum(colSums(rank_mat$max_DCor<thres)>2)
     
-    save.image(paste0("md31_outlier_",ops,".RData"))
-  }else 
-    if(Model=="3.2"){
+    save.image(paste0("md31_outlier_",outlier_ratio,".RData"))
+  
+######## Mode 3.2 ######
+    rm(list=ls())
+    library(snow)
+    library(snowfall)
+    library(tictoc)
+    library(movMF)
+    library(MASS)
+    ##change the parent path accordingly
+    parent.path<- "/Users/mengluche/Documents/Research/Ball_impurity/Code_availability/ballimpurity/BITF/"
+    source(paste0(parent.path,"simulation/simu_rank_matrix.R"))
+    
+    rep=100
+    n=200          #### sample size
+    p_X <- 500    #### number of columns in X
+    n_sig=2
+    p_Y<-5
+    
+    outlier_ratio=0.1 #### shall be modified to other outlier ratios e.g. 0.01
+    
+    startingseed=202479
+    B_True=matrix(c(0,2/3,-1/3,1,0,0,-1/3,-1/3,4/3,0)*1.5,nrow=2,byrow=T)
+    
+    rank_mat=list(nh_BI4=matrix(rep(0,rep*n_sig),nrow=rep),nh_BCor=matrix(rep(0,rep*n_sig),nrow=rep),nh_DCor=matrix(rep(0,rep*n_sig),nrow=rep),
+                  max_BI4=matrix(rep(0,rep*n_sig),nrow=rep),max_BCor=matrix(rep(0,rep*n_sig),nrow=rep),max_DCor=matrix(rep(0,rep*n_sig),nrow=rep))
+    
+    
+    
     sim_BI4=function(r){
       seed=startingseed+r
       set.seed(seed)
@@ -1236,18 +1347,6 @@ library(VGAM)
       res_r=simu_rank_matrix(Y,X,sig,D,method="DCor")$rank
       return(res_r)
     }
-    rep=100
-    n=200          #### sample size
-    p_X <- 500    #### number of columns in X
-    n_sig=2
-    p_Y<-5
-    
-    outlier_ratio=0.1
-    startingseed=202479
-    B_True=matrix(c(0,2/3,-1/3,1,0,0,-1/3,-1/3,4/3,0)*1.5,nrow=2,byrow=T)
-    
-    rank_mat=list(nh_BI4=matrix(rep(0,rep*n_sig),nrow=rep),nh_BCor=matrix(rep(0,rep*n_sig),nrow=rep),nh_DCor=matrix(rep(0,rep*n_sig),nrow=rep),
-                  max_BI4=matrix(rep(0,rep*n_sig),nrow=rep),max_BCor=matrix(rep(0,rep*n_sig),nrow=rep),max_DCor=matrix(rep(0,rep*n_sig),nrow=rep))
     
     tic()
     sfInit(cpus=4,parallel=TRUE) 
@@ -1283,9 +1382,6 @@ library(VGAM)
     sfStop()
     toc()
     
-    
-    
-    
     tic()
     sfInit(cpus=4,parallel=TRUE) 
     sfExportAll()
@@ -1320,7 +1416,7 @@ library(VGAM)
     toc()
     sum(rank_mat$eu_BCor[,1]<11)
     sum(rank_mat$eu_BCor[,2]<11)
-    sum(rowSums(rank_mat$eu_BCor[],]<11)>1)
+    sum(rowSums(rank_mat$eu_BCor[,]<11)>1)
     
     
     tic()
@@ -1370,9 +1466,9 @@ library(VGAM)
     sum(colSums(rank_mat$max_BCor<thres)>2)
     rowSums(rank_mat$max_DCor<thres)
     sum(colSums(rank_mat$max_DCor<thres)>2)
-    save.image(paste0("md32_outlier_",ops,".RData"))
-  }else 
-    if(Model=="3.3"){
+    save.image(paste0("md32_outlier_",outlier_ratio,".RData"))
+########### model 3.3 #################
+    rm(list=ls())
     library(Ball)
     library(BallImpurityFunc)
     library(movMF)
@@ -1434,5 +1530,4 @@ library(VGAM)
       results=rbind(results,c(ratesi,ratesallbi))
     }
     save.image("md3.3.RData")
-  }
-}
+  

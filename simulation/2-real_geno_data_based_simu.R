@@ -10,7 +10,7 @@ noise_level <- 0.5
 set.seed(20220614)
 library(snpStats)
 ##load part of chr19 data (0-3MB) of UKB
-data.chr.blk <- read.plink("/../geno_simu")
+data.chr.blk <- read.plink("/../geno_simu") ####### 
 
 # extract geno type and conduct QC -----------------------------------------------
 
@@ -110,8 +110,9 @@ rm(B_True_vec)
 library(Ball)
 library(Matrix)
 library(Rcpp)
-source('/utility_functions/0-tarv-transform-simu.R')
-sourceCpp("/utility_functions/BallDistanceVector.cpp")
+### specify your parent path
+parent.path<- "/Users/mengluche/Documents/Research/Ball_impurity/Code_availability/ballimpurity/BITF/"
+sourceCpp(paste0(parent.path,"code/BallDistanceVector.cpp"))
 
 true_sig=unlist(c(sig))
 
@@ -139,10 +140,10 @@ rm(ee, Y, Y_noise)
 dist_pheno = BallDistanceVector(pheno_list)
 
 #########################Ball Impurity Computation#############
-source("/utility_functions/SNP_IR_subsample.R")
-source("/utility_functions/SNP_IR_full.R")
-source("/utility_functions/BImp_subsample.R")
-sourceCpp("/utility_functions/BallImpurity.cpp")
+
+source(paste0(parent.path,"code/SNP_IR_full.R"))
+source(paste0(parent.path,"code/BImp_subsample.R"))
+sourceCpp(paste0(parent.path,"code/BallImpurity.cpp"))
 BI_fullsubsample=BallImpurity(n,dist_pheno,1:n,d=3)
 BallImp_full=rep(0,num.snps.per.blk)
 BallImp_subsample=rep(0,num.snps.per.blk)
@@ -161,7 +162,7 @@ print(which(o2%in%true_sig))
 print(paste0("out of ",length(o2), " signals."))
 
 
-pdf("2024Dec_simu_1k_strongSNR.pdf",width=8,height=6)
+pdf("simu_1k_strongSNR.pdf",width=8,height=6)
 par(mar=c(6,6,2.5,2.5))
 plot(map$position,BallImp_full_scaled,xlab="SNP position",ylab="Scaled BI reduction, BCor, DCor",ylim=c(min(BallImp_full_scaled),max(c(Cor_scaled,BallImp_full_scaled,DCor_scaled))),pch=1,cex=1.5,cex.main=2,cex.lab=2)
 points(map$position,Cor_scaled,pch=2,cex=1.5)
@@ -176,7 +177,7 @@ legend("topleft", legend = c("BI reduction","BCor","DCor","BI reduction of true 
        col=c('black','black','black','red','blue','green','steelblue'),pch=c(1,2,0,19,17,15,NA),lty = c(NA,NA,NA,NA,NA,NA,2),cex=1.5)
 dev.off()
 
-pdf("2024Dec_simu_1k_strongSNR_subsample.pdf",width=8,height=6)
+pdf("simu_1k_strongSNR_subsample.pdf",width=8,height=6)
 par(mar=c(6,6,2.5,2.5))
 plot(map$position,BallImp_subsample,xlab="SNP position",ylab="Impurity reduction",pch=1,cex=1,cex.main=2,cex.lab=2)
 points(map$position[true_sig],BallImp_subsample[true_sig],pch=19,cex=2,col="red")

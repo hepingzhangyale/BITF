@@ -6,7 +6,10 @@ ImpRedFunc=function(Y,X,D,BI_full,d){
   ### d is the parameter in BI
   ### optional: subsample method can be called, with default number of rep=10
   ### default is to use the full sample
-  source("code/biRegressionTree.R")
+  
+  ##change the parent path accordingly
+  parent.path<- "/Users/mengluche/Documents/Research/Ball_impurity/Code_availability/ballimpurity/BITF/"
+  source(paste0(parent.path,"code/biRegressionTree.R"))
   N=length(X)
   all_var=unique(X)
   if(length(all_var)==1){  ##only one variant present
