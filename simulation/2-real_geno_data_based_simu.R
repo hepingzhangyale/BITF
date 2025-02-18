@@ -71,7 +71,7 @@ rm(list=setdiff(ls(), c("geno",
 
 #### simulation true B #####
 ###smile
-B_True = as.matrix(read.csv("emoji_smile_adverse.csv", header = T))
+B_True = as.matrix(read.csv(paste0(parent.path,"simulation/emoji_smile_adverse.csv"), header = T))
 B_True[is.na(B_True)] = 0
 dimnames(B_True) = NULL
 B_True_vec <- as.vector(B_True)
